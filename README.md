@@ -1,2 +1,0 @@
-# slawdogporsche.github.io
-webpage
