@@ -1,31 +1,874 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-128827078-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben Heller | The Pigeonholed Analyst</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-cream: #F5F2EB;
+            --color-charcoal: #1a1a1a;
+            --color-warm-gray: #4a4a4a;
+            --color-accent: #C4A77D;
+            --color-accent-dark: #8B7355;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+        }
 
-  gtag('config', 'UA-128827078-1');
-</script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <meta charset="UTF-8">
-  <title>Ben's Data Science Website</title>
+        html {
+            scroll-behavior: smooth;
+        }
 
-  <link rel="stylesheet" type="text/css" href="style.css">
+        body {
+            font-family: var(--font-body);
+            background: var(--color-charcoal);
+            color: var(--color-cream);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: brightness(0.7);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.2) 0%,
+                rgba(0,0,0,0.1) 40%,
+                rgba(0,0,0,0.4) 80%,
+                rgba(26,26,26,1) 100%
+            );
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 2rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-name {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+
+        .hero-tagline {
+            font-family: var(--font-body);
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 2rem;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        .scroll-hint span {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .scroll-hint svg {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* ============================================
+           FORK SECTION - "What brings you here?"
+           ============================================ */
+        .fork-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 2rem;
+            background: var(--color-charcoal);
+        }
+
+        .fork-question {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+
+        .fork-question.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fork-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .fork-card {
+            position: relative;
+            aspect-ratio: 4/5;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fork-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fork-card:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .fork-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.6s ease;
+        }
+
+        .fork-card:hover img {
+            transform: scale(1.05);
+            filter: brightness(0.6);
+        }
+
+        .fork-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(0,0,0,0.8) 0%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.1) 100%
+            );
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            transition: background 0.4s ease;
+        }
+
+        .fork-card:hover .fork-card-overlay {
+            background: linear-gradient(
+                to top,
+                rgba(0,0,0,0.9) 0%,
+                rgba(0,0,0,0.4) 50%,
+                rgba(0,0,0,0.2) 100%
+            );
+        }
+
+        .fork-card-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .fork-card-subtitle {
+            font-size: 0.95rem;
+            color: var(--color-accent);
+            letter-spacing: 0.05em;
+        }
+
+        .fork-card-arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--color-cream);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s ease;
+        }
+
+        .fork-card:hover .fork-card-arrow {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .fork-card-arrow svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* ============================================
+           PHOTOGRAPHY SECTION
+           ============================================ */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: rgba(245, 242, 235, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            aspect-ratio: 3/2;
+            cursor: pointer;
+        }
+
+        .photo-item.tall {
+            grid-row: span 2;
+            aspect-ratio: auto;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.03);
+        }
+
+        .photo-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            transition: background 0.4s ease;
+        }
+
+        .photo-item:hover .photo-item-overlay {
+            background: rgba(0,0,0,0.4);
+        }
+
+        .photo-item-caption {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+
+        .photo-item:hover .photo-item-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           PROFESSIONAL SECTION
+           ============================================ */
+        .professional-section {
+            background: var(--color-cream);
+            color: var(--color-charcoal);
+        }
+
+        .professional-section .section-title {
+            color: var(--color-charcoal);
+        }
+
+        .professional-section .section-subtitle {
+            color: var(--color-warm-gray);
+        }
+
+        .professional-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .professional-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        .professional-sidebar {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .professional-name {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .professional-title {
+            color: var(--color-accent-dark);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .professional-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .professional-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-charcoal);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .professional-link:hover {
+            color: var(--color-accent-dark);
+        }
+
+        .professional-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .professional-main h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .professional-main h3:first-child {
+            margin-top: 0;
+        }
+
+        .experience-item {
+            margin-bottom: 2rem;
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-role {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .experience-date {
+            font-size: 0.9rem;
+            color: var(--color-warm-gray);
+        }
+
+        .experience-company {
+            color: var(--color-accent-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .experience-description {
+            color: var(--color-warm-gray);
+            font-size: 0.95rem;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: rgba(0,0,0,0.05);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--color-warm-gray);
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--color-charcoal);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: rgba(245, 242, 235, 0.5);
+        }
+
+        footer a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        /* ============================================
+           LIGHTBOX
+           ============================================ */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
-
 <body>
 
-  <h1>Welcome</h1>
-  <img src="garfield.gif" alt="Everything and Nothing">
-    <p><a href="mailto:benihana320@gmail.com"><strong>Email</strong> </a>
-    <p><a href="https://github.com/slawdogporsche"><strong>Github</strong> </a>
-    <p> <a href="index2.html"><strong>Photography</strong></a>
-    <p><a href="resume.pdf"><strong>Resume</strong></a>
+    <!-- ============================================
+         HERO
+         ============================================ -->
+    <section class="hero">
+        <img src="images/hero-sand-dunes.jpeg" alt="Great Sand Dunes, Colorado" class="hero-image">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-name">Ben Heller</h1>
+            <p class="hero-tagline">The Pigeonholed Analyst</p>
+        </div>
+        <a href="#fork" class="scroll-hint">
+            <span>Explore</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </a>
+    </section>
+
+    <!-- ============================================
+         FORK - "What brings you here?"
+         ============================================ -->
+    <section id="fork" class="fork-section">
+        <h2 class="fork-question">What brings you here?</h2>
+        <div class="fork-cards">
+            <a href="#photography" class="fork-card">
+                <img src="images/bighorn-sheep.jpeg" alt="Wildlife Photography">
+                <div class="fork-card-overlay">
+                    <h3 class="fork-card-title">Photography</h3>
+                    <p class="fork-card-subtitle">Wildlife, landscapes & the unexpected</p>
+                </div>
+                <div class="fork-card-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </div>
+            </a>
+            <a href="#professional" class="fork-card">
+                <img src="images/industrial-silo.jpeg" alt="Professional Work">
+                <div class="fork-card-overlay">
+                    <h3 class="fork-card-title">Professional</h3>
+                    <p class="fork-card-subtitle">Data analytics & the day job</p>
+                </div>
+                <div class="fork-card-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ============================================
+         PHOTOGRAPHY
+         ============================================ -->
+    <section id="photography" class="section">
+        <header class="section-header">
+            <h2 class="section-title">Photography</h2>
+            <p class="section-subtitle">
+                Colorado wildlife, landscapes, and whatever catches my eye through the viewfinder of a Nikon D7500.
+            </p>
+        </header>
+        
+        <div class="photo-grid">
+            <div class="photo-item" onclick="openLightbox(this)">
+                <img src="images/bighorn-sheep.jpeg" alt="Bighorn Sheep">
+                <div class="photo-item-overlay">
+                    <span class="photo-item-caption">The lads out having fun</span>
+                </div>
+            </div>
+            <div class="photo-item" onclick="openLightbox(this)">
+                <img src="images/moon.jpeg" alt="Moon">
+                <div class="photo-item-overlay">
+                    <span class="photo-item-caption">Once in a Blue Moon</span>
+                </div>
+            </div>
+            <div class="photo-item" onclick="openLightbox(this)">
+                <img src="images/industrial-silo.jpeg" alt="McMeekin Power Plant">
+                <div class="photo-item-overlay">
+                    <span class="photo-item-caption">McMeekin Power Plant</span>
+                </div>
+            </div>
+            <div class="photo-item" onclick="openLightbox(this)">
+                <img src="images/bird-bokeh.jpeg" alt="Dark-eyed Junco at Emerald Lake">
+                <div class="photo-item-overlay">
+                    <span class="photo-item-caption">Dark-eyed Junco, Emerald Lake, RMNP</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         PROFESSIONAL
+         ============================================ -->
+    <section id="professional" class="section professional-section">
+        <header class="section-header">
+            <h2 class="section-title">Professional</h2>
+            <p class="section-subtitle">
+                Staff Data Analyst with 7+ years turning messy data into actionable insights.
+            </p>
+        </header>
+
+        <div class="professional-content">
+            <aside class="professional-sidebar">
+                <h2 class="professional-name">Ben Heller</h2>
+                <p class="professional-title">Staff Data Analyst</p>
+                <p class="professional-contact" style="font-size: 0.9rem; color: #4a4a4a; margin-bottom: 1.5rem;">
+                    Westminster, CO<br>
+                    benihana320@gmail.com
+                </p>
+                <div class="professional-links">
+                    <a href="mailto:benihana320@gmail.com" class="professional-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Email
+                    </a>
+                    <a href="https://github.com/slawdogporsche" class="professional-link" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/ben-heller-4569ba11b/" class="professional-link" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                        LinkedIn
+                    </a>
+                </div>
+            </aside>
+
+            <main class="professional-main">
+                <h3>Experience</h3>
+                
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">Staff Data Analyst</span>
+                        <span class="experience-date">Mar 2022 – Present</span>
+                    </div>
+                    <p class="experience-company">Workiva · Westminster, CO</p>
+                    <p class="experience-description">
+                        Primary analytics resource for Growth Solutions SVP during quarterly business reviews. Built ML models for deal conversion prediction, 
+                        developed conversation intelligence systems from Salesforce call transcripts, and created executive dashboards 
+                        serving Financial Reporting, GRC, Sustainability, Government, and Financial Services verticals.
+                    </p>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">Senior Data Analyst</span>
+                        <span class="experience-date">Jun 2019 – Mar 2022</span>
+                    </div>
+                    <p class="experience-company">TCC · Alpharetta, GA</p>
+                    <p class="experience-description">
+                        Regression model for employment verification KPIs → 23% more accurate revenue forecasts. 
+                        Sales prospecting classifier → 12% reduction in non-profitable integrations. 
+                        Software stopgap eliminating ~3,200 hrs of backlog data entry. 
+                        Automation of weekly/monthly analysis saving 160 hrs/yr.
+                    </p>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">Data Specialist</span>
+                        <span class="experience-date">Feb 2019 – Jun 2019</span>
+                    </div>
+                    <p class="experience-company">Trax Retail · Lawrenceville, GA</p>
+                    <p class="experience-description">
+                        KPI creation/validation, dashboard development, and customer API integration standardization.
+                    </p>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">Teaching Assistant</span>
+                        <span class="experience-date">Aug 2018 – Feb 2019</span>
+                    </div>
+                    <p class="experience-company">Georgia Tech · Atlanta, GA</p>
+                    <p class="experience-description">
+                        TA for 28-week data analytics bootcamp: Excel, Python, Tableau, R, web dev, and ML (TensorFlow/Keras).
+                    </p>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">Data Analyst</span>
+                        <span class="experience-date">Aug 2017 – Aug 2018</span>
+                    </div>
+                    <p class="experience-company">Clickagy · Alpharetta, GA</p>
+                    <p class="experience-description">
+                        Procedure library reducing query errors → 13% monthly cost reduction. Data viz and statistical analysis for five major campaigns.
+                    </p>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">Senior Chemist</span>
+                        <span class="experience-date">Feb 2015 – Jun 2017</span>
+                    </div>
+                    <p class="experience-company">Q.E.P. Co., Inc. · Dalton, GA</p>
+                    <p class="experience-description">
+                        Managed two direct reports. Developed two green adhesives from market analysis to production. Reformulated legacy adhesives for cost reduction and hazmat replacement.
+                    </p>
+                </div>
+
+                <h3>Skills</h3>
+                <div class="skills-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="skills-category">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8B7355; margin-bottom: 0.5rem;">Programming</h4>
+                        <div class="skills-list">
+                            <span class="skill-tag">R</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">SQL / NoSQL</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">VBA</span>
+                            <span class="skill-tag">PowerShell</span>
+                        </div>
+                    </div>
+                    <div class="skills-category">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8B7355; margin-bottom: 0.5rem;">Platforms</h4>
+                        <div class="skills-list">
+                            <span class="skill-tag">AWS</span>
+                            <span class="skill-tag">Snowflake</span>
+                            <span class="skill-tag">Tableau</span>
+                            <span class="skill-tag">Salesforce</span>
+                            <span class="skill-tag">Git</span>
+                            <span class="skill-tag">Linux</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Education</h3>
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <span class="experience-role">B.S. Chemistry</span>
+                        <span class="experience-date">May 2013</span>
+                    </div>
+                    <p class="experience-company">Kennesaw State University · Kennesaw, GA</p>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer>
+        <p>
+            © 2025 Ben Heller · 
+            <a href="mailto:benihana320@gmail.com">Get in touch</a> · 
+            Westminster, Colorado
+        </p>
+    </footer>
+
+    <!-- ============================================
+         LIGHTBOX
+         ============================================ -->
+    <div class="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close">&times;</button>
+        <img src="" alt="">
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.fork-question, .fork-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Lightbox functionality
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close lightbox on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
 
 </body>
-
-</HTML>
+</html>
